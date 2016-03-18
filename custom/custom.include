@@ -64,6 +64,7 @@ margin-right:0em;
 }*/
 
 </style>
+<script src="custom/mermaid.min.js"/>
 <script>
     MathJax.Hub.Config({
                         TeX: {
