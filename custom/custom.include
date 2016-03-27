@@ -1,3 +1,4 @@
+<link href='https://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'/>
 <style>
 @font-face {
     font-family: 'Optima';
@@ -19,6 +20,15 @@ line-height: 100%;
 display: block;
 }*/
 .text_cell_render h1 {
+/*font-size: 24pt;*/
+font-weight: bold;
+margin-bottom: 0.1em;
+margin-top: 0.5em;
+color:#4a4a4a;
+}
+
+.reveal h1 {
+font-family: 'Optima', sans-serif;
 /*font-size: 24pt;*/
 font-weight: bold;
 margin-bottom: 0.1em;
@@ -58,13 +68,66 @@ text-align: justify;
 margin-left:0em;
 margin-right:0em;
 }
-
+.reveal div.text_cell_render{
+font-family: 'Optima', sans-serif;
+line-height: 120%;
+font-size: 74%;
+font-weight: 400;
+text-align: justify;
+margin-left:0em;
+margin-right:0em;
+}
+.reveal h1 {
+font-family: 'Optima', sans-serif;
+/*font-size: 90%; */
+/*font-size: 24pt;*/
+font-weight: bold;
+margin-bottom: 0.1em;
+margin-top: 0.5em;
+color:#4a4a4a;
+}
+.reveal h2 {
+font-family: 'Optima', sans-serif;
+/*font-size: 24pt;*/
+font-weight: bold;
+margin-bottom: 0.1em;
+margin-top: 0.5em;
+color:#595959;
+}
+.reveal h3 {
+font-family: 'Optima', sans-serif;
+/*font-size: 24pt;*/
+font-weight: bold;
+margin-bottom: 0.1em;
+margin-top: 0.5em;
+color:#595959;
+}
+.reveal h4 {
+font-family: 'Optima', sans-serif;
+font-weight: bold;
+margin-bottom: 0.1em;
+margin-top: 0.5em;
+color:#595959;
+}
+.reveal code {
+font-family: 'Inconsolata', monospace;
+}
+.reveal pre {
+font-family: 'Inconsolata', monospace;
+}
+code {
+font-family: 'Inconsolata', monospace;
+}
+pre {
+font-family: 'Inconsolata', monospace;
+}
+.CodeMirror{
+font-family: "Inconsolata", monospace;
+}
 /*body{
   font-family: 'Optima', sans-serif;
 }*/
-
 </style>
-<script src="custom/mermaid.min.js"/>
 <script>
     MathJax.Hub.Config({
                         TeX: {
