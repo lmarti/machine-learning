@@ -131,8 +131,8 @@ font-family: "Inconsolata", monospace;
 <script>
     MathJax.Hub.Config({
                         TeX: {
-                           extensions: ["AMSmath.js"],
-                           equationNumbers: { autoNumber: "AMS", useLabelIds: true}
+                           extensions: ["AMSmath.js","color.js"],
+                           equationNumbers: { autoNumber: "all"}
                            },
                 tex2jax: {
                     inlineMath: [ ['$','$'], ["\\(","\\)"] ],

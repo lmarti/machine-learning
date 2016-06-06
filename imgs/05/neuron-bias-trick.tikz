@@ -1,0 +1,34 @@
+\tikzstyle{inputNode}=[draw,circle,minimum size=5pt,inner sep=0pt,fill=gray!74]
+\tikzstyle{stateTransition}=[->, thick]
+\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+
+\tikzset{
+    pics/circle vertically split/.style 2 args = {
+       code = {
+       \node[inner sep=2pt,left,text opacity=1] (-left) {#1};
+       \node[inner sep=2pt,right] (-right) {#2};
+         \path let
+              \p1 = ($(-left.north west) - (-left.east)$),
+              \p2 = ($(-right.west) - (-right.south east)$),
+              \n1 = {max(veclen(\p1), veclen(\p2))*2}
+           in node[minimum size=\n1, circle, draw] (-shape) at (0,0) {};
+         \draw (-shape.north) -- (-shape.south);
+       }
+    }
+}
+
+\draw (0,0) pic (x) {circle vertically split={$\mathrm{net}$}{$f()$}};
+
+\node[inputNode,pin=left:{$x_{0}=1$}] (x0) at (-3, 1.5) {};
+\node[inputNode,pin=left:$x_{1}$] (x1) at (-3, 0.75) {};
+\node[inputNode,pin=left:$x_{2}$] (x2) at (-3, 0) {};
+\node[inputNode,pin=left:$x_{3}$] (x3) at (-3, -0.75) {};
+\node[inputNode,pin=left:$x_{n}$] (xn) at (-3, -1.75) {};
+
+\draw[stateTransition] (x0) to[out=0,in=120] node [near start, sloped, above=-2] {$w_0$} (x-shape);
+\draw[stateTransition] (x1) to[out=0,in=150] node [near start, sloped, above=-2] {$w_1$} (x-shape);
+\draw[stateTransition] (x2) to[out=0,in=180] node [near start, sloped, above=-2] {$w_2$} (x-shape);
+\draw[stateTransition] (x3) to[out=0,in=210] node [near start, sloped, above=-2] {$w_3$} (x-shape);
+\draw[stateTransition] (xn) to[out=0,in=240] node [near start, sloped, above=-2] {$w_n$} (x-shape);
+\draw[stateTransition] (x-shape) -- (2,0) node [midway,above=-0.cm] {$\hat{y}$};
+\node (dots) at (-3, -1.15) {$\vdots$};
