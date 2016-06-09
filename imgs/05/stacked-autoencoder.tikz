@@ -1,0 +1,69 @@
+\def\layersep{3.0cm}
+%\sffamily
+
+\newsavebox\logitbox
+\savebox\logitbox{\draw[color=black,scale=0.2,line width=0.5mm] plot[mark=none, samples=50, domain=-8:8,] ({\x/8},{2/(2+exp(-\x))-0.5});;}
+
+\newsavebox\linearbox
+\savebox\linearbox{\draw[color=black,scale=0.15,line width=0.5mm] plot[mark=none,samples=2,domain=-3:3,] ({\x/6},{\x/3 - 0.0});;}
+
+\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+\tikzstyle{neuron}=[circle,fill=black!25,minimum size=0.74cm,inner sep=0pt]
+\tikzstyle{input neuron}=[neuron, fill=black!74, minimum size=0.25cm];
+\tikzstyle{output neuron}=[neuron, fill=red!50];
+\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+\tikzstyle{annot} = [text width=11em, text centered]
+
+% Draw the input layer nodes
+\foreach \name / \y in {1,...,6}
+% This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
+    \node[input neuron, pin=left:$x_{\y}$] (I-\name) at (0,1-\y cm) {};
+
+% Draw the hidden layer nodes
+\foreach \name / \y in {1,...,5}
+    \path[yshift=-0.5cm] node[hidden neuron, fill=blue!56] (H1-\name) at (\layersep,-\y cm) {\usebox\logitbox};
+
+% Draw the hidden layer nodes
+\foreach \name / \y in {1,...,3}
+    \path[yshift=-1.5cm,  xshift=\layersep] node[hidden neuron, fill=blue!38] (H2-\name) at (\layersep,-\y cm) {\usebox\logitbox};
+
+% Draw the hidden layer nodes
+\foreach \name / \y in {1,...,2}
+    \path[yshift=-2.0cm,  xshift=2*\layersep] node[hidden neuron, fill=blue!20] (H3-\name) at (\layersep,-\y cm) {\usebox\logitbox};
+
+
+% Draw the output layer nodes
+\foreach \name / \y in {1,...,4}
+    \path[yshift=-1cm, xshift=3*\layersep] node[output neuron,pin={[pin edge={->}]right:$y_\y$}] (O-\name) at (\layersep,-\y cm) {\usebox\linearbox};
+
+% Draw the output layer node
+\path[yshift=1cm, xshift=0] node[input neuron] (I-0) [below left=0.3cm and 0.74cm of H1-5, pin=west:{\small${x_0=1}$}] {};
+\node[input neuron] (H1-0) [below left=0.92cm of H2-3, pin=south west:{\small${x_0=1}$}] {};
+\node[input neuron] (H2-0) [below left=1.1cm of H3-2, pin=south west:{\small${x_0=1}$}] {};
+\node[input neuron] (H3-0) [left=1.cm of O-4, pin=south west:{\small${x_0=1}$}] {};
+
+% Connect every node in the input layer with every node in the
+% hidden layer.
+\foreach \source in {0,...,6}
+    \foreach \dest in {1,...,5}
+        \path [->] (I-\source) edge node [sloped, near end, inner sep=0pt] {} (H1-\dest);
+
+\foreach \source in {0,...,5}
+    \foreach \dest in {1,...,3}
+        \path [->] (H1-\source) edge node [sloped, near end, inner sep=0pt] {} (H2-\dest);
+
+\foreach \source in {0,...,3}
+    \foreach \dest in {1,...,2}
+        \path [->] (H2-\source) edge node [sloped, near end, inner sep=0pt] {} (H3-\dest);
+
+\foreach \source in {0,...,2}
+    \foreach \dest in {1,...,4}
+        \path [->] (H3-\source) edge node [sloped, near end, inner sep=0pt] {} (O-\dest);
+
+
+% Annotate the layers
+\node[annot, above=0.25cm of H3-1] (hl) {Autoencoder 3};
+\node[annot, above=0.25cm of H2-1] (hl) {Autoencoder 2};
+\node[annot, above=0.25cm of H1-1] (hl) {Autoencoder 1};
+\node[annot, above=0.25cm of I-1] {Input layer};
+\node[annot, above=0.25cm of O-1] {Output layer};

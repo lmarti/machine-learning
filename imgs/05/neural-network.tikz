@@ -1,5 +1,5 @@
 \def\layersep{3.5cm}
-\sffamily
+%\sffamily
 
 \newsavebox\logitbox
 \savebox\logitbox{\draw[color=black,scale=0.2,line width=0.5mm] plot[mark=none, samples=50, domain=-8:8,] ({\x/8},{2/(2+exp(-\x))-0.5});;}
@@ -11,7 +11,7 @@
 \tikzstyle{neuron}=[circle,fill=black!25,minimum size=0.74cm,inner sep=0pt]
 \tikzstyle{input neuron}=[neuron, fill=black!74, minimum size=0.25cm];
 \tikzstyle{output neuron}=[neuron, fill=red!50];
-\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+\tikzstyle{hidden neuron}=[neuron, fill=blue!47];
 \tikzstyle{annot} = [text width=4em, text centered]
 
 % Draw the input layer nodes
@@ -32,7 +32,7 @@
 % Draw the output layer node
 %\node[output neuron, pin={[pin edge={->}]right:Output}, right of=H-3] (O) {};
 
-\node[input neuron] (H-0) [above left=1cm of O-1,pin=north west:${x_0=1}$] {};
+\node[input neuron] (H-0) [above left=1cm of O-1,pin=north west:{\small${x_0=1}$}] {};
 
 % Connect every node in the input layer with every node in the
 % hidden layer.

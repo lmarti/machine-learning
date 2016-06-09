@@ -1,0 +1,52 @@
+\def\layersep{3.5cm}
+%\sffamily
+
+\newsavebox\logitbox
+\savebox\logitbox{\draw[color=black,scale=0.2,line width=0.5mm] plot[mark=none, samples=50, domain=-8:8,] ({\x/8},{2/(2+exp(-\x))-0.5});;}
+
+\newsavebox\linearbox
+\savebox\linearbox{\draw[color=black,scale=0.15,line width=0.5mm] plot[mark=none,samples=2,domain=-3:3,] ({\x/6},{\x/3 - 0.0});;}
+
+\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+\tikzstyle{neuron}=[circle,fill=black!25,minimum size=0.74cm,inner sep=0pt]
+\tikzstyle{input neuron}=[neuron, fill=black!74, minimum size=0.25cm];
+\tikzstyle{output neuron}=[neuron, fill=red!50];
+\tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+\tikzstyle{annot} = [text width=4em, text centered]
+
+% Draw the input layer nodes
+\foreach \name / \y in {1,...,6}
+% This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
+    \node[input neuron, pin=left:$x_{\y}$] (I-\name) at (0,1-\y cm) {};
+
+% Draw the hidden layer nodes
+\foreach \name / \y in {1,...,4}
+    \path[yshift=-1.0cm] node[hidden neuron] (H-\name) at (\layersep,-\y cm) {\usebox\logitbox};
+
+
+% Draw the output layer nodes
+\foreach \name / \y in {1,...,6}
+    \path[yshift=0cm, xshift=\layersep] node[output neuron,pin={[pin edge={->}]right:$x_\y$}] (O-\name) at (\layersep,-\y cm) {\usebox\linearbox};
+
+% Draw the output layer node
+\node[input neuron] (I-0) [left=5cm of O-6,pin=south west:{\small${x_0=1}$}] {};
+\node[input neuron] (H-0) [left=1.5cm of O-6,pin=south west:{\small${x_0=1}$}] {};
+
+% Connect every node in the input layer with every node in the
+% hidden layer.
+\foreach \source in {0,...,6}
+    \foreach \dest in {1,...,4}
+        \path [->] (I-\source) edge node [sloped,near end,inner sep=0pt] {} (H-\dest);
+
+\foreach \source in {0,...,4}
+    \foreach \dest in {1,...,6}
+        \path [->] (H-\source) edge node [sloped,near end,inner sep=0pt] {} (O-\dest);
+
+% Connect every node in the hidden layer with the output layer
+% \foreach \source in {1,...,5}
+%    \path (H-\source) edge (O);
+
+% Annotate the layers
+\node[annot,above of=H-1] (hl) {Hidden layer};
+\node[annot,above of=I-1] {Input layer};
+\node[annot,above of=O-1] {Output layer};
