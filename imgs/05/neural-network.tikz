@@ -23,7 +23,7 @@
 \foreach \name / \y in {1,...,5}
     \path[yshift=2.0cm] node[hidden neuron] (H-\name) at (\layersep,-1.5*\y cm) {\usebox\logitbox};
 
-\node[input neuron] (I-0) [left=1.5cm of H-1,pin=north west:{\small${x_0=1}$}] {};
+\node[input neuron] (I-0) [left=1.5cm of H-1,pin=north west:{\small${x^1_0=1}$}] {};
 
 % Draw the output layer nodes
 \foreach \name / \y in {1,...,3}
@@ -32,7 +32,7 @@
 % Draw the output layer node
 %\node[output neuron, pin={[pin edge={->}]right:Output}, right of=H-3] (O) {};
 
-\node[input neuron] (H-0) [above left=1cm of O-1,pin=north west:{\small${x_0=1}$}] {};
+\node[input neuron] (H-0) [above left=1cm of O-1,pin=north west:{\small${x^2_0=1}$}] {};
 
 % Connect every node in the input layer with every node in the
 % hidden layer.

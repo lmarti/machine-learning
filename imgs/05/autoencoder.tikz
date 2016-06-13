@@ -29,8 +29,8 @@
     \path[yshift=0cm, xshift=\layersep] node[output neuron,pin={[pin edge={->}]right:$x_\y$}] (O-\name) at (\layersep,-\y cm) {\usebox\linearbox};
 
 % Draw the output layer node
-\node[input neuron] (I-0) [left=5cm of O-6,pin=south west:{\small${x_0=1}$}] {};
-\node[input neuron] (H-0) [left=1.5cm of O-6,pin=south west:{\small${x_0=1}$}] {};
+\node[input neuron] (I-0) [left=5cm of O-6,pin=south west:{\small${x^1_0=1}$}] {};
+\node[input neuron] (H-0) [left=1.5cm of O-6,pin=south west:{\small${x^2_0=1}$}] {};
 
 % Connect every node in the input layer with every node in the
 % hidden layer.
