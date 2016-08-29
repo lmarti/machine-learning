@@ -1,4 +1,4 @@
-digraph Deep_Learning {
+digraph XORnet {
   //  graph [fontname="Optima",size="10,10"];
     node [fontname="Optima", shape=circle, nodesep=0.15, fontcolor=black, color=gray, fillcolor=lightgray, style=filled, fontsize=11];
     edge [fontname="Optima", fontcolor=black, fontsize=10,splines=curved];
