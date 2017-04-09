@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="d3viz/css/d3viz.css"/>
+	<link rel="stylesheet" href="d3viz/css/d3-context-menu.css"/>
+	<script type="text/javascript" src="d3viz/js/d3viz.js"></script>
+	<script type="text/javascript" src="d3viz/js/d3.v3.min.js"></script>
+	<script type="text/javascript" src="d3viz/js/dagre-d3.min.js"></script>
+	<script type="text/javascript" src="d3viz/js/graphlib-dot.min.js"></script>
+	<script type="text/javascript" src="d3viz/js/d3-context-menu.js"></script>
+</head>
+<body>
+	<div id='menu' class='menuBar'>
+	    <input name="resetNodes" 
+	           type="button" 
+	           value="Reset nodes"
+	           onclick="resetNodes()"/>
+	    <input name="releaseNodes" 
+	           type="button" 
+	           value="Release nodes"
+	           onclick="releaseNodes()"/>
+	</div>
+
+	<script type="text/javascript">
+		// Backend graph in DOT format
+		var dotGraph = graphlibDot.read("digraph G {\n\tgraph [bb=\"0,0,424.14,552\"];\n\tnode [label=\"\\N\"];\n\tn1\t [apply_op=DimShuffle,\n\t\theight=0.5,\n\t\tlabel=DimShuffle,\n\t\tnode_type=apply,\n\t\tpos=\"123,448\",\n\t\tshape=ellipse,\n\t\twidth=1.4272];\n\tn8\t [apply_op=Elemwise,\n\t\tfillcolor=\"#FFAABB\",\n\t\theight=0.5,\n\t\tlabel=Elemwise,\n\t\tnode_type=apply,\n\t\tpos=\"140,362\",\n\t\tshape=ellipse,\n\t\tstyle=filled,\n\t\ttype=colored,\n\t\twidth=1.2494];\n\tn1 -> n8\t [label=\"1 bscalar\",\n\t\tlp=\"145.07,405\",\n\t\tpos=\"e,128.05,379.66 119.25,429.95 117.8,420.41 117.09,408.38 119.86,398 120.71,394.82 121.93,391.62 123.35,388.53\"];\n\tn2\t [dtype=bscalar,\n\t\tfillcolor=SpringGreen,\n\t\theight=0.5,\n\t\tlabel=1,\n\t\tnode_type=constant_input,\n\t\tpos=\"123,534\",\n\t\tshape=box,\n\t\tstyle=filled,\n\t\twidth=0.75];\n\tn2 -> n1\t [color=dodgerblue,\n\t\tlabel=bscalar,\n\t\tlp=\"142.82,491\",\n\t\tpos=\"e,123,466.1 123,515.6 123,504.26 123,489.23 123,476.32\"];\n\tn4\t [apply_op=Elemwise,\n\t\tfillcolor=\"#FFAABB\",\n\t\theight=0.5,\n\t\tlabel=Elemwise,\n\t\tnode_type=apply,\n\t\tpos=\"248,362\",\n\t\tshape=ellipse,\n\t\tstyle=filled,\n\t\ttype=colored,\n\t\twidth=1.2494];\n\tn10\t [apply_op=Elemwise,\n\t\tfillcolor=\"#FFAABB\",\n\t\theight=0.5,\n\t\tlabel=Elemwise,\n\t\tnode_type=apply,\n\t\tpos=\"292,276\",\n\t\tshape=ellipse,\n\t\tstyle=filled,\n\t\ttype=colored,\n\t\twidth=1.2494];\n\tn4 -> n10\t [label=\"0 bscalar\",\n\t\tlp=\"283.07,319\",\n\t\tpos=\"e,273.12,292.48 249.04,343.87 250.21,334.07 252.67,321.82 257.86,312 260.12,307.72 263.06,303.61 266.28,299.81\"];\n\tn5\t [dtype=dscalar,\n\t\tfillcolor=limegreen,\n\t\theight=0.5,\n\t\tlabel=x,\n\t\tnode_type=input,\n\t\tpos=\"27,448\",\n\t\tshape=box,\n\t\tstyle=filled,\n\t\twidth=0.75];\n\tn5 -> n4\t [label=\"0 dscalar\",\n\t\tlp=\"214.07,405\",\n\t\tpos=\"e,222.9,377.08 54.205,433.21 57.13,432.01 60.098,430.91 63,430 109.01,415.57 125.63,430.9 170,412 179.6,407.91 180.16,403.78 188.86,\\\n398 196.89,392.67 205.74,387.21 214.09,382.25\"];\n\tn13\t [apply_op=Elemwise,\n\t\tfillcolor=\"#FFAABB\",\n\t\theight=0.5,\n\t\tlabel=Elemwise,\n\t\tnode_type=apply,\n\t\tpos=\"140,276\",\n\t\tshape=ellipse,\n\t\tstyle=filled,\n\t\ttype=colored,\n\t\twidth=1.2494];\n\tn5 -> n13\t [label=\"0 dscalar\",\n\t\tlp=\"61.071,362\",\n\t\tpos=\"e,107.82,288.59 24.135,429.93 21.419,408.28 19.829,370.59 35.858,344 50.037,320.48 75.998,303.75 98.452,292.89\"];\n\tn6\t [dtype=bscalar,\n\t\tfillcolor=SpringGreen,\n\t\theight=0.5,\n\t\tlabel=2,\n\t\tnode_type=constant_input,\n\t\tpos=\"338,448\",\n\t\tshape=box,\n\t\tstyle=filled,\n\t\twidth=0.75];\n\tn6 -> n4\t [label=\"1 bscalar\",\n\t\tlp=\"351.07,405\",\n\t\tpos=\"e,280.71,374.45 333.48,429.94 330.05,419.68 324.47,406.93 316,398 308.66,390.26 299.23,383.93 289.75,378.89\"];\n\tn6 -> n8\t [label=\"0 bscalar\",\n\t\tlp=\"287.07,405\",\n\t\tpos=\"e,173.77,373.9 310.88,436.17 296.03,429.83 277.51,421.27 261.86,412 252.88,406.68 252.24,402.85 243,398 237.35,395.03 208.93,385.44 \\\n183.37,377.04\"];\n\tn15\t [apply_op=Elemwise,\n\t\tfillcolor=\"#FFAABB\",\n\t\theight=0.5,\n\t\tlabel=Elemwise,\n\t\tnode_type=apply,\n\t\tpos=\"292,190\",\n\t\tshape=ellipse,\n\t\tstyle=filled,\n\t\ttype=colored,\n\t\twidth=1.2494];\n\tn6 -> n15\t [label=\"1 bscalar\",\n\t\tlp=\"399.07,319\",\n\t\tpos=\"e,320.24,204.2 365.26,430.24 371.2,425.17 376.7,419.05 380,412 386.45,398.22 400.58,458.1 372,312 364.33,272.81 370,257.92 346,226 \\\n341.38,219.86 335.35,214.49 329,209.93\"];\n\tn8 -> n13\t [label=\"1 dscalar\",\n\t\tlp=\"165.07,319\",\n\t\tpos=\"e,140,294.1 140,343.6 140,332.26 140,317.23 140,304.32\"];\n\tn10 -> n15\t [label=\"0 dscalar\",\n\t\tlp=\"317.07,233\",\n\t\tpos=\"e,292,208.1 292,257.6 292,246.26 292,231.23 292,218.32\"];\n\tn11\t [dtype=dscalar,\n\t\tfillcolor=SpringGreen,\n\t\theight=0.5,\n\t\tlabel=\" 1.\",\n\t\tnode_type=constant_input,\n\t\tpos=\"338,362\",\n\t\tshape=box,\n\t\tstyle=filled,\n\t\twidth=0.75];\n\tn11 -> n10\t [label=\"1 dscalar\",\n\t\tlp=\"343.07,319\",\n\t\tpos=\"e,301.21,293.81 328.47,343.6 322.03,331.84 313.42,316.12 306.18,302.9\"];\n\tn17\t [apply_op=Elemwise,\n\t\tfillcolor=\"#FFAABB\",\n\t\theight=0.5,\n\t\tlabel=Elemwise,\n\t\tnode_type=apply,\n\t\tpos=\"201,104\",\n\t\tshape=ellipse,\n\t\tstyle=filled,\n\t\ttype=colored,\n\t\twidth=1.2494];\n\tn13 -> n17\t [label=\"1 bscalar\",\n\t\tlp=\"202.07,190\",\n\t\tpos=\"e,194.95,121.85 146.07,258.08 156.71,228.42 178.81,166.85 191.49,131.5\"];\n\tn15 -> n17\t [label=\"0 bscalar\",\n\t\tlp=\"277.07,147\",\n\t\tpos=\"e,218.04,120.73 274.88,173.2 261.03,160.41 241.33,142.23 225.76,127.85\"];\n\tn18\t [dtype=dscalar,\n\t\tfillcolor=dodgerblue,\n\t\theight=0.5,\n\t\tlabel=dscalar,\n\t\tnode_type=output,\n\t\tpos=\"201,18\",\n\t\tshape=box,\n\t\tstyle=filled,\n\t\twidth=0.7728];\n\tn17 -> n18\t [label=dscalar,\n\t\tlp=\"220.82,61\",\n\t\tpos=\"e,201,36.095 201,85.595 201,74.257 201,59.227 201,46.315\"];\n}\n");
+		// Frontend graph for visualization
+		var graph = {};
+		
+		var forceLayout;
+		var isProfiled = false; // true if profiling information available
+		var useProfileColors = false;
+		var fixOnInit = true; // fix nodes on initialization
+		var maxProfilePer = 0;
+		var profileColors = ["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15"];
+		var pad = 10;
+		var isEditNode = false; // true if node is edited
+		var menuItems = [
+			{
+				title: 'Edit',
+				action: function(elm, d, i) { editNode(elm, d); }
+			},
+			{
+				title: 'Release',
+				action: function(elm, d, i) { releaseNode(d); }
+			}
+		];
+
+		// Create main panel
+		d3.select('body').select('svg').remove();
+		var svg = d3.select('body').append('svg')
+			.attr('width', '100%')
+			.attr('height', '95%');
+		var pane = svg.append('g');
+		
+		// Zoom behaviour
+		var zoom = d3.behavior.zoom()
+			.scaleExtent([0.2, 8])
+			.on('zoom', function(d) {
+				var trans = d3.event.translate;
+				trans[0] += 300;
+				trans[1] += 100;
+				pane.attr('transform', 'translate(' + trans + ') scale(' + d3.event.scale + ')');
+			});
+		svg.call(zoom);
+		zoom.event(svg);
+		svg.on("dblclick.zoom", null);
+		
+		// Edges
+		var edgeDiv = d3.select('body').append('div')
+			.attr('class', 'edgeTooltip')
+			.style('opacity', 0.0);
+		
+		// Div for node details	
+		var nodeInfo = d3.select('body').append('div')
+			.attr('class', 'nodeInfo')
+			.style('opacity', 0.0);
+		
+		// Definition head of edges
+		var markerData = [
+			{'id': 'n', 'color': 'black'},
+			{'id': 'r', 'color': 'red'},
+			{'id': 'b', 'color': 'dodgerblue'}];
+		svg.append("defs").selectAll('marker').data(markerData).enter().append("marker")
+		    .attr("id", function(d) { return 'edgeArrow_' + d.id;})
+		    .attr("markerWidth", 4)
+		    .attr("markerHeight", 4)
+		    .attr("refX", 2)
+		    .attr("refY", 2)
+		    .attr("orient", "auto")
+		  	.append("path")
+		    .attr("d", "M0,0 L4,2 L0,4 Z")
+		    .attr('fill', function(d) { return d.color;});
+	
+		// Initialize graph
+		processDotGraph(dotGraph);		
+		graph = frontEndGraph(dotGraph);
+		drawGraph();
+	</script>
+</body>
+</html>

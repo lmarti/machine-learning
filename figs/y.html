@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="d3viz/css/d3viz.css"/>
+	<link rel="stylesheet" href="d3viz/css/d3-context-menu.css"/>
+	<script type="text/javascript" src="d3viz/js/d3viz.js"></script>
+	<script type="text/javascript" src="d3viz/js/d3.v3.min.js"></script>
+	<script type="text/javascript" src="d3viz/js/dagre-d3.min.js"></script>
+	<script type="text/javascript" src="d3viz/js/graphlib-dot.min.js"></script>
+	<script type="text/javascript" src="d3viz/js/d3-context-menu.js"></script>
+</head>
+<body>
+	<div id='menu' class='menuBar'>
+	    <input name="resetNodes" 
+	           type="button" 
+	           value="Reset nodes"
+	           onclick="resetNodes()"/>
+	    <input name="releaseNodes" 
+	           type="button" 
+	           value="Release nodes"
+	           onclick="releaseNodes()"/>
+	</div>
+
+	<script type="text/javascript">
+		// Backend graph in DOT format
+		var dotGraph = graphlibDot.read("digraph G {\n\tgraph [bb=\"0,0,133.14,208\"];\n\tnode [label=\"\\N\"];\n\tn1\t [apply_op=Elemwise,\n\t\tfillcolor=\"#FFAABB\",\n\t\theight=0.5,\n\t\tlabel=Elemwise,\n\t\tnode_type=apply,\n\t\tpos=\"63,104\",\n\t\tshape=ellipse,\n\t\tstyle=filled,\n\t\ttype=colored,\n\t\twidth=1.2494];\n\tn4\t [dtype=dscalar,\n\t\tfillcolor=dodgerblue,\n\t\theight=0.5,\n\t\tlabel=dscalar,\n\t\tnode_type=output,\n\t\tpos=\"63,18\",\n\t\tshape=box,\n\t\tstyle=filled,\n\t\twidth=0.7728];\n\tn1 -> n4\t [label=dscalar,\n\t\tlp=\"82.821,61\",\n\t\tpos=\"e,63,36.095 63,85.595 63,74.257 63,59.227 63,46.315\"];\n\tn2\t [dtype=dscalar,\n\t\tfillcolor=limegreen,\n\t\theight=0.5,\n\t\tlabel=x,\n\t\tnode_type=input,\n\t\tpos=\"27,190\",\n\t\tshape=box,\n\t\tstyle=filled,\n\t\twidth=0.75];\n\tn2 -> n1\t [label=\"0 dscalar\",\n\t\tlp=\"53.071,147\",\n\t\tpos=\"e,42.402,120.36 24.191,171.56 23.386,161.89 23.659,149.86 27.858,140 29.691,135.69 32.33,131.64 35.349,127.92\"];\n\tn3\t [dtype=bscalar,\n\t\tfillcolor=SpringGreen,\n\t\theight=0.5,\n\t\tlabel=2,\n\t\tnode_type=constant_input,\n\t\tpos=\"100,190\",\n\t\tshape=box,\n\t\tstyle=filled,\n\t\twidth=0.75];\n\tn3 -> n1\t [label=\"1 bscalar\",\n\t\tlp=\"108.07,147\",\n\t\tpos=\"e,70.404,121.81 92.334,171.6 87.206,159.95 80.364,144.42 74.577,131.28\"];\n}\n");
+		// Frontend graph for visualization
+		var graph = {};
+		
+		var forceLayout;
+		var isProfiled = false; // true if profiling information available
+		var useProfileColors = false;
+		var fixOnInit = true; // fix nodes on initialization
+		var maxProfilePer = 0;
+		var profileColors = ["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15"];
+		var pad = 10;
+		var isEditNode = false; // true if node is edited
+		var menuItems = [
+			{
+				title: 'Edit',
+				action: function(elm, d, i) { editNode(elm, d); }
+			},
+			{
+				title: 'Release',
+				action: function(elm, d, i) { releaseNode(d); }
+			}
+		];
+
+		// Create main panel
+		d3.select('body').select('svg').remove();
+		var svg = d3.select('body').append('svg')
+			.attr('width', '100%')
+			.attr('height', '95%');
+		var pane = svg.append('g');
+		
+		// Zoom behaviour
+		var zoom = d3.behavior.zoom()
+			.scaleExtent([0.2, 8])
+			.on('zoom', function(d) {
+				var trans = d3.event.translate;
+				trans[0] += 300;
+				trans[1] += 100;
+				pane.attr('transform', 'translate(' + trans + ') scale(' + d3.event.scale + ')');
+			});
+		svg.call(zoom);
+		zoom.event(svg);
+		svg.on("dblclick.zoom", null);
+		
+		// Edges
+		var edgeDiv = d3.select('body').append('div')
+			.attr('class', 'edgeTooltip')
+			.style('opacity', 0.0);
+		
+		// Div for node details	
+		var nodeInfo = d3.select('body').append('div')
+			.attr('class', 'nodeInfo')
+			.style('opacity', 0.0);
+		
+		// Definition head of edges
+		var markerData = [
+			{'id': 'n', 'color': 'black'},
+			{'id': 'r', 'color': 'red'},
+			{'id': 'b', 'color': 'dodgerblue'}];
+		svg.append("defs").selectAll('marker').data(markerData).enter().append("marker")
+		    .attr("id", function(d) { return 'edgeArrow_' + d.id;})
+		    .attr("markerWidth", 4)
+		    .attr("markerHeight", 4)
+		    .attr("refX", 2)
+		    .attr("refY", 2)
+		    .attr("orient", "auto")
+		  	.append("path")
+		    .attr("d", "M0,0 L4,2 L0,4 Z")
+		    .attr('fill', function(d) { return d.color;});
+	
+		// Initialize graph
+		processDotGraph(dotGraph);		
+		graph = frontEndGraph(dotGraph);
+		drawGraph();
+	</script>
+</body>
+</html>
