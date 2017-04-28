@@ -1,0 +1,36 @@
+\def\layersep{3cm}
+
+\newsavebox\logitbox
+\savebox\logitbox{\draw[color=black,scale=0.2,line width=0.5mm] plot[mark=none, samples=50, domain=-8:8,] ({\x/8},{2/(2+exp(-\x))-0.5});;}
+\tikzstyle{every pin edge}=[<-,shorten <=1pt]
+\tikzstyle{neuron}=[circle,fill=black!25,minimum size=0.74cm,inner sep=0pt]
+\tikzstyle{input neuron}=[neuron, fill=black!74, minimum size=0.25cm];
+\tikzstyle{output neuron}=[neuron, fill=red!50];
+\tikzstyle{hidden neuron}=[neuron, fill=blue!47];
+\tikzstyle{annot} = [text width=4em, text centered];
+
+\foreach \name / \y in {1,...,2}
+    \node[input neuron, pin=left:$x_{\y}$] (I-\name) at (0,-\y) {};
+\foreach \name / \y in {1,...,2}
+    \path[yshift=0.75cm] node[hidden neuron] (H-\name) at (\layersep,-1.5*\y cm) {$\y$};
+
+\node[input neuron] (I-0) [yshift=0.5cm,left=1.5cm of H-1,pin=north west:{\small${x^1_0=1}$}] {};
+
+% Draw the output layer nodes
+\foreach \name / \y in {1,...,1}
+    \path[yshift=0.5cm, xshift=\layersep] node[output neuron,pin={[pin edge={->}]right:$\hat{y}$}] (O-\name) at (\layersep,-2.0*\y cm) {$3$};
+
+% Draw the output layer node
+%\node[output neuron, pin={[pin edge={->}]right:Output}, right of=H-2] (O) {};
+
+\node[input neuron] (H-0) [right=1cm of H-1, yshift=0.5cm, pin=north west:{\small${x^2_0=1}$}] {};
+
+% Connect every node in the input layer with every node in the
+% hidden layer.
+\foreach \source in {0,...,2}
+    \foreach \dest in {1,...,2}
+        \path [->] (I-\source) edge node [sloped,near end,fill=white!98,inner sep=0pt] {\tiny $w^{1}_{\dest\source}$} (H-\dest);
+
+\foreach \source in {0,...,2}
+    \foreach \dest in {1,...,1}
+        \path [->] (H-\source) edge node [sloped,near end,fill=white!98,inner sep=0pt] {\tiny $w_{\dest\source}$} (O-\dest);
