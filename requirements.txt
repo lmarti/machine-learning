@@ -4,3 +4,4 @@ scipy
 theano
 ipywidgets
 matplotlib
+pandas
